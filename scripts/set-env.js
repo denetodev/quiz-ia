@@ -1,9 +1,17 @@
 const fs = require('fs');
 
+const url = process.env['SUPABASE_URL'];
+const key = process.env['SUPABASE_KEY'];
+
+if (!url || !key) {
+  console.error('ERRO: SUPABASE_URL ou SUPABASE_KEY não estão definidas no ambiente.');
+  process.exit(1);
+}
+
 const envContent = `export const environment = {
   production: true,
-  supabaseUrl: '${process.env['SUPABASE_URL']}',
-  supabaseKey: '${process.env['SUPABASE_KEY']}'
+  supabaseUrl: '${url}',
+  supabaseKey: '${key}'
 };
 `;
 
