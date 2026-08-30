@@ -15,10 +15,10 @@
 
   @if (view() === 'lobby') {
     <h1>QUIZ IA</h1>
-    <p>
-      Link para os jogadores:
-      <code>{{ publicUrl || 'cole a URL da Vercel aqui depois do deploy' }}</code>
-    </p>
+    <div class="qr-container">
+      <img [src]="qrCodeUrl" alt="QR code para entrar no quiz" width="280" height="280" />
+      <p class="url-fallback">{{ publicUrl }}</p>
+    </div>
     <p>
       Jogadores conectados: <strong>{{ playerCount() }}</strong>
     </p>

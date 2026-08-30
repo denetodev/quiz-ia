@@ -64,7 +64,7 @@ export class Host implements OnInit, OnDestroy {
 
   questions = QUESTIONS;
   revealStep = signal(0); // 0 = nada revelado, 1 = só 3º, 2 = 3º e 2º, 3 = todos
-  publicUrl = ''; // preenchido depois do deploy na Vercel
+  publicUrl = 'https://quiz-ia-iota.vercel.app/';
 
   private stateChannel: any;
   private answersChannel: any;
@@ -96,6 +96,11 @@ export class Host implements OnInit, OnDestroy {
 
   resetReveal() {
     this.revealStep.set(0);
+  }
+
+  get qrCodeUrl(): string {
+    const encoded = encodeURIComponent(this.publicUrl);
+    return `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encoded}`;
   }
 
   private async startListening() {
