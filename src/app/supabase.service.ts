@@ -109,4 +109,23 @@ export class SupabaseService {
       )
       .subscribe();
   }
+
+  async countPlayers(): Promise<number> {
+    const { count } = await this.client.from('players').select('*', { count: 'exact', head: true });
+    return count || 0;
+  }
+
+  async countAnswersForQuestion(qIndex: number): Promise<number> {
+    const { count } = await this.client
+      .from('answers')
+      .select('*', { count: 'exact', head: true })
+      .eq('question_index', qIndex);
+    return count || 0;
+  }
+
+  async resetGame() {
+    await this.client.from('answers').delete().neq('player_name', '');
+    await this.client.from('players').delete().neq('name', '');
+    await this.setGameState({ phase: 'lobby', question_index: 0, started_at: null });
+  }
 }

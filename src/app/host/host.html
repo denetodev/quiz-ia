@@ -1,0 +1,60 @@
+<div class="wrap">
+
+  @if (view() === 'login') {
+    <h1>MODO HOST</h1>
+    <input type="password" [(ngModel)]="codeInput" placeholder="Código do apresentador" (keyup.enter)="login()">
+    <button (click)="login()">DESBLOQUEAR</button>
+    @if (loginError()) { <p class="error">{{ loginError() }}</p> }
+  }
+
+  @if (view() === 'lobby') {
+    <h1>QUIZ IA</h1>
+    <p>Link para os jogadores: <code>{{ publicUrl || 'cole a URL da Vercel aqui depois do deploy' }}</code></p>
+    <p>Jogadores conectados: <strong>{{ playerCount() }}</strong></p>
+    <button (click)="startQuiz()">COMEÇAR O QUIZ ▶</button>
+    <button (click)="resetAll()" class="danger">zerar dados (teste)</button>
+  }
+
+  @if (view() === 'question') {
+    <p class="tag">Pergunta {{ currentQuestion() + 1 }} / {{ questions.length }}</p>
+    <h2>{{ questions[currentQuestion()].q }}</h2>
+    <div class="answers">
+      @for (opt of questions[currentQuestion()].a; track $index) {
+        <div class="ans" [class.correct]="phase() === 'reveal' && $index === questions[currentQuestion()].c">
+          {{ opt }}
+        </div>
+      }
+    </div>
+    <p>Respostas recebidas: {{ answerCount() }} / {{ playerCount() }}</p>
+
+    @if (phase() === 'q') {
+      <button (click)="reveal()">REVELAR RESPOSTA</button>
+    } @else {
+      <button (click)="next()">
+        {{ currentQuestion() + 1 < questions.length ? 'PRÓXIMA ▶' : 'VER PÓDIO 🏆' }}
+      </button>
+    }
+
+    <h3>Ranking parcial</h3>
+    <ol>
+      @for (row of board(); track row.name) {
+        <li>{{ row.name }} — {{ row.points }} pts</li>
+      }
+    </ol>
+  }
+
+  @if (view() === 'final') {
+    <h1>🏆 PÓDIO 🏆</h1>
+    <ol>
+      @for (row of board(); track row.name; let i = $index) {
+        <li>
+          {{ i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i+1) }}
+          {{ row.name }} — {{ row.points }} pts
+        </li>
+      }
+    </ol>
+    <p>1º → livro Ultraaprendizado | 2º e 3º → chocolate</p>
+    <button (click)="resetAll()" class="danger">zerar dados (novo jogo)</button>
+  }
+
+</div>
