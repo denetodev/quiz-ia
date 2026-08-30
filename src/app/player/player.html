@@ -1,0 +1,47 @@
+<div class="wrap">
+
+  @if (view() === 'join') {
+    <h1>QUIZ IA</h1>
+    <p>Responda certo. Responda rápido. Leve o prêmio.</p>
+    <input type="text" [(ngModel)]="name" placeholder="Seu nome" (keyup.enter)="join()" [disabled]="joining()">
+    <button (click)="join()" [disabled]="joining()">ENTRAR NO JOGO</button>
+    @if (joinError()) { <p class="error">{{ joinError() }}</p> }
+  }
+
+  @if (view() === 'lobby') {
+    <p>Você está dentro, {{ myName() }}.</p>
+    <p>Aguarde o apresentador liberar a pergunta...</p>
+  }
+
+  @if (view() === 'question') {
+    <p class="tag">Pergunta {{ currentQuestion() + 1 }} de {{ questions.length }}</p>
+    <h2>{{ questions[currentQuestion()].q }}</h2>
+    <div class="answers">
+      @for (opt of questions[currentQuestion()].a; track $index) {
+        <button
+          [class.chosen]="myAnswer() === $index"
+          [disabled]="myAnswer() !== null"
+          (click)="answer($index)">
+          {{ opt }}
+        </button>
+      }
+    </div>
+    @if (myAnswer() !== null) { <p>Resposta registrada. Segura a ansiedade.</p> }
+  }
+
+  @if (view() === 'reveal') {
+    @if (wasCorrect()) {
+      <h2>✔ Acertou!</h2>
+      <p>+{{ pointsEarned() }} pontos</p>
+    } @else {
+      <h2>✘ Errou</h2>
+      <p>A certa era: {{ correctAnswerText() }}</p>
+    }
+  }
+
+  @if (view() === 'final') {
+    <h2>#{{ finalRank() }}</h2>
+    <p>{{ finalPoints() }} pontos no total</p>
+  }
+
+</div>
