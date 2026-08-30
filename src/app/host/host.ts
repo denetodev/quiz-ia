@@ -58,10 +58,12 @@ export class Host implements OnInit, OnDestroy {
   playerCount = signal(0);
   currentQuestion = signal(0);
   answerCount = signal(0);
+  respondedList = signal<{ name: string; answered: boolean }[]>([]);
   phase = signal<GameState['phase']>('lobby');
   board = signal<BoardRow[]>([]);
 
   questions = QUESTIONS;
+  revealStep = signal(0); // 0 = nada revelado, 1 = só 3º, 2 = 3º e 2º, 3 = todos
   publicUrl = ''; // preenchido depois do deploy na Vercel
 
   private stateChannel: any;
@@ -88,6 +90,14 @@ export class Host implements OnInit, OnDestroy {
     }
   }
 
+  revealNextPlace() {
+    if (this.revealStep() < 3) this.revealStep.set(this.revealStep() + 1);
+  }
+
+  resetReveal() {
+    this.revealStep.set(0);
+  }
+
   private async startListening() {
     const state = await this.supabase.getGameState();
     if (state) this.applyState(state);
@@ -106,14 +116,25 @@ export class Host implements OnInit, OnDestroy {
     else if (state.phase === 'final') {
       this.view.set('final');
       this.refreshBoard();
+      this.revealStep.set(0);
     } else this.view.set('question');
     this.refreshCounts();
+  }
+
+  private async refreshResponded() {
+    const players = await this.supabase.getPlayers();
+    const answers = await this.supabase.getAnswersForQuestion(this.currentQuestion());
+    const answeredNames = new Set(answers.map((a) => a.player_name));
+    const list = players
+      .map((p) => ({ name: p.name, answered: answeredNames.has(p.name) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    this.respondedList.set(list);
   }
 
   private async refreshCounts() {
     this.playerCount.set(await this.supabase.countPlayers());
     this.answerCount.set(await this.supabase.countAnswersForQuestion(this.currentQuestion()));
-    if (this.view() === 'question') this.refreshBoard();
+    if (this.view() === 'question') this.refreshResponded();
   }
 
   private score(t: number): number {

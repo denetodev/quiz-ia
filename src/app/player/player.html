@@ -40,8 +40,9 @@
   }
 
   @if (view() === 'final') {
-    <h2>#{{ finalRank() }}</h2>
-    <p>{{ finalPoints() }} pontos no total</p>
-  }
+  <h2>Fim de jogo!</h2>
+  <p>Você fez {{ finalPoints() }} pontos no total.</p>
+  <p class="tag">O resultado final está sendo revelado no telão...</p>
+}
 
 </div>

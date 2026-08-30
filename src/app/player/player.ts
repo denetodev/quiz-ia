@@ -5,12 +5,7 @@ import { SupabaseService, GameState } from '../supabase.service';
 const QUESTIONS = [
   {
     q: 'Complete: "A IA não faz o meu trabalho, ela..."',
-    a: [
-      'pensa por mim',
-      'faz o trabalho que me atrasava de fazer o meu',
-      'substitui o Excel',
-      'faz tudo sozinha',
-    ],
+    a: ['pensa por mim', 'acelera o que eu já faria.', 'substitui o Excel', 'faz tudo sozinha'],
     c: 1,
   },
   {
@@ -56,6 +51,7 @@ export class Player implements OnInit, OnDestroy {
   joining = signal(false);
 
   currentQuestion = signal<number>(-1);
+  revealedQuestionIndex = signal(0);
   questionShownAt = 0;
   myAnswer = signal<number | null>(null);
   wasCorrect = signal(false);
@@ -141,6 +137,7 @@ export class Player implements OnInit, OnDestroy {
   }
 
   private async computeReveal(qIndex: number) {
+    this.revealedQuestionIndex.set(qIndex);
     const correct = this.questions[qIndex].c;
     const mine = this.myAnswer();
     if (mine === correct) {
@@ -171,7 +168,7 @@ export class Player implements OnInit, OnDestroy {
   }
 
   correctAnswerText(): string {
-    const q = this.questions[this.currentQuestion()];
+    const q = this.questions[this.revealedQuestionIndex()];
     return q ? q.a[q.c] : '';
   }
 }
