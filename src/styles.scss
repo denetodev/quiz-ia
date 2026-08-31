@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --black: #0A0A0A;
+  --surface: #141414;
+  --off-white: #F5F3EF;
+  --paper: #EDE8E0;
+  --orange: #FF6200;
+  --dim: #8b8680;
+  --border: #2a2622;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--black);
+  color: var(--off-white);
+  font-family: 'Sora', system-ui, sans-serif;
+}
+
+button {
+  font-family: 'Sora', system-ui, sans-serif;
+  cursor: pointer;
+}
+
+input {
+  font-family: 'Sora', system-ui, sans-serif;
+}
