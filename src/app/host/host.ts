@@ -69,6 +69,7 @@ export class Host implements OnInit, OnDestroy {
   private stateChannel: any;
   private answersChannel: any;
   private playersChannel: any;
+  private pollInterval: any;
 
   constructor(private supabase: SupabaseService) {}
 
@@ -80,6 +81,7 @@ export class Host implements OnInit, OnDestroy {
     this.stateChannel?.unsubscribe();
     this.answersChannel?.unsubscribe();
     this.playersChannel?.unsubscribe();
+    clearInterval(this.pollInterval);
   }
 
   login() {
@@ -112,6 +114,10 @@ export class Host implements OnInit, OnDestroy {
     this.playersChannel = this.supabase.onPlayersChange(() => this.refreshCounts());
 
     await this.refreshCounts();
+
+      // rede de segurança: se algum evento de push se perder, isso
+  // garante que o contador nunca fica desatualizado por mais de 3s
+  this.pollInterval = setInterval(() => this.refreshCounts(), 3000);
   }
 
   private applyState(state: GameState) {

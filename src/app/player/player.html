@@ -15,7 +15,6 @@
 
   @if (view() === 'question') {
     <p class="tag">Pergunta {{ currentQuestion() + 1 }} de {{ questions.length }}</p>
-    <h2>{{ questions[currentQuestion()].q }}</h2>
     <div class="answers">
       @for (opt of questions[currentQuestion()].a; track $index) {
         <button

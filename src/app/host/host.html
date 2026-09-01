@@ -1,3 +1,7 @@
+@if (view() !== 'login') {
+  <button class="emergency-reset" (click)="resetAll()">⟳ Zerar</button>
+}
+
 <div class="wrap">
   @if (view() === 'login') {
     <h1>MODO HOST</h1>
@@ -19,6 +23,16 @@
       <img [src]="qrCodeUrl" alt="QR code para entrar no quiz" width="280" height="280" />
       <p class="url-fallback">{{ publicUrl }}</p>
     </div>
+
+    <div class="rules-card">
+      <h3>Como funciona</h3>
+      <ul>
+        <li>Acerto = pontos + bônus de velocidade — quanto mais rápido, mais pontos</li>
+        <li>Ao escolher uma alternativa, ela trava — não dá pra trocar depois</li>
+        <li>Aguarde todos responderem e o apresentador revelar a resposta certa</li>
+      </ul>
+    </div>
+
     <p>
       Jogadores conectados: <strong>{{ playerCount() }}</strong>
     </p>
@@ -60,8 +74,9 @@
   @if (view() === 'final') {
     <div class="podium-fullscreen">
       @if (revealStep() === 0) {
-        <h1>🏆 PÓDIO 🏆</h1>
-        <button (click)="revealNextPlace()">REVELAR 3º LUGAR</button>
+        <h1>🍫 TODOS GANHAM! 🍫</h1>
+        <p>Antes do pódio... todo mundo que jogou leva um docinho.</p>
+        <button (click)="revealNextPlace()">REVELAR O PÓDIO ▶</button>
       }
       @if (revealStep() === 1 && board()[2]) {
         <div class="place p3">
